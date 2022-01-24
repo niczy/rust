@@ -50,6 +50,11 @@ fn plus_two_v3<T: PlusTrait>(x: i32, plus: &T) -> i32 {
     plus.plus_one(y)
 }
 
+fn plus_two_v4(x: i32, pluser: &dyn PlusTrait) -> i32 {
+    let y = pluser.plus_one(x);
+    pluser.plus_one(y)
+}
+
 
 #[cfg(test)]
 mod tests {
@@ -65,5 +70,8 @@ mod tests {
         let p = &PlusInstance{};
         let z = plus_two_v3(1, p);
         assert_eq!(z, 3);
+
+        let u = plus_two_v4(1, p);
+        assert_eq!(u, 3);
     }
 }
