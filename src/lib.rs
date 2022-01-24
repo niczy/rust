@@ -3,6 +3,10 @@ pub trait PluserTrait {
     fn plus_one(x : i32) -> i32;
 }
 
+pub trait PlusTrait {
+    fn plus_one(&self, x : i32) -> i32;
+}
+
 pub trait SomeTrait: Send + Sync {
     type Pluser: PluserTrait;
 }
@@ -16,7 +20,15 @@ impl PluserTrait for PluserInstance {
     fn plus_one(x: i32) -> i32 {
         x+1
     }
+}
 
+struct PlusInstance {
+}
+
+impl PlusTrait for PlusInstance {
+    fn plus_one(&self, x: i32) -> i32 {
+        x+1
+    }
 }
 
 impl SomeTrait for SomeInstance {
@@ -33,6 +45,11 @@ fn plus_two_v2<T: PluserTrait>(x: i32) -> i32 {
     T::plus_one(y)
 }
 
+fn plus_two_v3<T: PlusTrait>(x: i32, plus: &T) -> i32 {
+    let y = plus.plus_one(x);
+    plus.plus_one(y)
+}
+
 
 #[cfg(test)]
 mod tests {
@@ -44,5 +61,9 @@ mod tests {
 
         let y = plus_two_v2::<PluserInstance>(1);
         assert_eq!(y, 3);
+
+        let p = &PlusInstance{};
+        let z = plus_two_v3(1, p);
+        assert_eq!(z, 3);
     }
 }
